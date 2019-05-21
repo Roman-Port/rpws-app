@@ -39,7 +39,7 @@ public abstract class PebblePacketTool {
             PebblePacket packet = (PebblePacket)PebblePacket.DeserializeObject(ds, type.GetTypeClass());
             return packet;
         } catch (Exception ex) {
-            RpwsLog.Log("pbl-protocol-fail-instantiate", "Failed to instantiate Pebble protocol packet with endpoint "+endpoint+" ("+endpointCode+") and payload length "+(b.length - 3)+"! Dropping...");
+            RpwsLog.LogException("pbl-protocol-fail-instantiate", "Failed to instantiate Pebble protocol packet with endpoint "+endpoint+" ("+endpointCode+") and payload length "+(b.length - 3)+"! Dropping with error: ",ex);
             return null;
         }
     }

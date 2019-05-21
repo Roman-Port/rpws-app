@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.util.Base64;
 
+import com.google.gson.Gson;
 import com.romanport.rpws.RpwsLog;
 import com.romanport.rpws.protocol.PebblePacket;
 import com.romanport.rpws.protocol.PebblePacketTool;
@@ -12,6 +13,7 @@ import com.romanport.rpws.protocol.msgs.PhoneVersionResponse;
 import com.romanport.rpws.protocol.msgs.PingReply;
 import com.romanport.rpws.protocol.msgs.PingRequest;
 import com.romanport.rpws.protocol.msgs.TimeSetUTC;
+import com.romanport.rpws.protocol.msgs.WatchVersionReply;
 import com.romanport.rpws.protocol.msgs.WatchVersionRequest;
 import com.romanport.rpws.util.DecoderStream;
 import com.romanport.rpws.util.EncoderStream;
@@ -51,6 +53,13 @@ public class PebbleDevice implements PebbleTransportInterface {
                 SendMsg(new PhoneVersionResponse());
             } else if(type.CompareToName("PING_REQUEST")){
                 SendMsg(new PingReply());//Respond to ping
+            } else if(type.CompareToName("PEBBLE_VERSION_REPLY")) {
+                WatchVersionReply r = (WatchVersionReply)packet;
+
+                //debug
+                Gson gson = new Gson();
+                String json = gson.toJson(r);
+                RpwsLog.Log("jesus-it-works", json);
             }
         } catch (Exception ex) {
             RpwsLog.Log("pbl-device-bg", "Error handling incoming Pebble packet "+type.toString()+": "+ex.toString());

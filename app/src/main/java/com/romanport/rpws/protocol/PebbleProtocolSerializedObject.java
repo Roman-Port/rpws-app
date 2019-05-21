@@ -1,6 +1,9 @@
 package com.romanport.rpws.protocol;
 
+import android.util.Log;
+
 import com.romanport.rpws.RpwsLog;
+import com.romanport.rpws.protocol.custom_types.BinaryArray;
 import com.romanport.rpws.util.DecoderStream;
 import com.romanport.rpws.util.EncoderStream;
 
@@ -60,9 +63,21 @@ public class PebbleProtocolSerializedObject {
         } else if (type == Long.class) {
             es.WriteInt64((Long)value);
         } else if (type == String.class) {
-            es.WriteLengthedString((String) value);
+            //Strings have more settings. Get them
+            PebbleProtocolSerializedString sett = (PebbleProtocolSerializedString)GetRequiredAttrib(f, PebbleProtocolSerializedString.class);
+            if(sett.length() == -1)
+                es.WriteLengthedString((String) value);
+            else
+                es.WriteConstString((String) value, sett.length());
+        } else if (type == BinaryArray.class) {
+            //Has special settings. Read.
+            PebbleProtocolSerializedBinaryArray sett = (PebbleProtocolSerializedBinaryArray)GetRequiredAttrib(f, PebbleProtocolSerializedBinaryArray.class);
+            BinaryArray ba = (BinaryArray)value;
+            ba.Write(es);
         } else if (type == Byte.class) {
-            es.WriteByte((Byte)value);
+            es.WriteByte((Byte) value);
+        } else if (type == Boolean.class) {
+            es.WriteBool((Boolean)value);
         } else if (PebbleProtocolSerializedObject.class.isAssignableFrom(type)) {
             //This is another serialized object. Serialize it as a child of this
             PebbleProtocolSerializedObject child = (PebbleProtocolSerializedObject)value;
@@ -78,6 +93,7 @@ public class PebbleProtocolSerializedObject {
     public static PebbleProtocolSerializedObject DeserializeObject(DecoderStream ds, Class<? extends PebbleProtocolSerializedObject> packetClass) throws Exception {
 
         //Instantiate new
+        RpwsLog.Log("debugging", "Creating object "+packetClass.getName()+" at pos "+ds.pos);
         Constructor<?> ctor = packetClass.getConstructor();
         PebbleProtocolSerializedObject object = (PebbleProtocolSerializedObject)ctor.newInstance(new Object[] { });
 
@@ -122,9 +138,22 @@ public class PebbleProtocolSerializedObject {
         } else if (type == Long.class) {
             f.set(t, (Long)es.ReadLong());
         } else if (type == String.class) {
-            f.set(t, es.ReadLengthedString());
+            //Strings have more settings. Get them
+            PebbleProtocolSerializedString sett = (PebbleProtocolSerializedString) GetRequiredAttrib(f, PebbleProtocolSerializedString.class);
+            if (sett.length() == -1)
+                f.set(t, es.ReadLengthedString());
+            else
+                f.set(t, es.ReadConstString(sett.length()));
+        } else if (type == BinaryArray.class) {
+            //Has special settings. Read.
+            PebbleProtocolSerializedBinaryArray sett = (PebbleProtocolSerializedBinaryArray)GetRequiredAttrib(f, PebbleProtocolSerializedBinaryArray.class);
+            f.set(t, BinaryArray.Read(es, sett.length()));
         } else if (type == Byte.class) {
-            f.set(t, (Byte)es.ReadByte());
+            f.set(t, (Byte) es.ReadByte());
+        } else if (type == Boolean.class) {
+            Byte b = es.ReadByte();
+            Boolean value = b == 1;
+            f.set(t, value);
         } else if (PebbleProtocolSerializedObject.class.isAssignableFrom(type)) {
             //This is another serialized object. Serialize it as a child of this
             PebbleProtocolSerializedObject o = DeserializeObject(es, type);
@@ -133,5 +162,18 @@ public class PebbleProtocolSerializedObject {
             //No idea.
             throw new Exception("Incompatible type to deserialize '"+type.toString()+"' with name '"+f.getName()+"' in class '"+t.getClass().getName()+"'.");
         }
+    }
+
+    private static Annotation GetRequiredAttrib(Field f, Class<? extends Annotation> classname) throws Exception {
+        Annotation[] ans = f.getDeclaredAnnotations();
+        for(int j = 0; j<ans.length; j++) {
+            Annotation a = ans[j];
+            if(a.annotationType() == classname) {
+                return a;
+            }
+        }
+
+        //Failed
+        throw new Exception("Field with name '"+f.getName()+"' was missing a required annotation.");
     }
 }

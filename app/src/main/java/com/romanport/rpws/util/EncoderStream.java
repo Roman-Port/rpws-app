@@ -66,4 +66,11 @@ public class EncoderStream {
         WriteByte((byte)stringData.length);
         WriteBytes(stringData);
     }
+
+    public void WriteConstString(String s, int length) throws Exception {
+        byte[] stringData = s.getBytes();
+        if(stringData.length != length)
+            throw new Exception("String sent to WriteConstString did not match the required length!");
+        WriteBytes(stringData);
+    }
 }

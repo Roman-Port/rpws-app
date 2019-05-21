@@ -5,7 +5,7 @@ import java.lang.reflect.Array;
 public class DecoderStream {
 
     private byte[] source;
-    private int pos;
+    public int pos;
 
     public DecoderStream(byte[] b) {
         source = b;
@@ -53,6 +53,11 @@ public class DecoderStream {
 
     public String ReadLengthedString() {
         int length = (int)ReadByte();
+        byte[] buf = ReadBytes(length);
+        return new String(buf);
+    }
+
+    public String ReadConstString(int length) {
         byte[] buf = ReadBytes(length);
         return new String(buf);
     }
