@@ -17,7 +17,8 @@ public enum PebblePacketType {
 
     PHONE_APP_VERSION_REQUEST(0x11, 0x00, DummyPebblePacket.class),
     PHONE_APP_VERSION_REPLY(0x11, 0x01, PhoneVersionResponse.class),
-    PEBBLE_VERSION_REQUEST(0x10, 0x00, WatchVersionRequest.class),
+    PEBBLE_VERSION_REQUEST(16, 0, WatchVersionRequest.class),
+    PEBBLE_VERSION_REPLY(16, 1, DummyPebblePacket.class),
 
     PING_REQUEST(2001, 0x00, PingRequest.class),
     PING_REPLY(2001, 0x01, PingReply.class);
@@ -39,7 +40,7 @@ public enum PebblePacketType {
     public static PebblePacketType fromId(int value, byte subValue) {
         //Kinda janky
         for(int i = 0; i<values().length; i+=1) {
-            if(values()[i].id == value && values()[0].subId == subValue)
+            if(values()[i].id == value && values()[i].subId == subValue)
                 return values()[i];
         }
         return null;

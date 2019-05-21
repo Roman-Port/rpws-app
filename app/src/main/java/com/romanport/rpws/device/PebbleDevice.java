@@ -24,7 +24,11 @@ public class PebbleDevice implements PebbleTransportInterface {
     }
 
     public void OnConnectionOpened() {
-
+        try {
+            SendMsg(new WatchVersionRequest());
+        } catch (Exception ex) {
+            RpwsLog.Log("pbl-device-bg", "Error sending watch info request: "+ex.toString());
+        }
     }
 
     public void OnGetMsg(byte[] b) {

@@ -20,7 +20,7 @@ public abstract class PebblePacket {
     //Decodes a framed packet WITHOUT IT'S LENGTH!
     public static PebblePacket DecodePacket(byte[] b) {
         //Check if the packet is long enough
-        if(b.length < 5) {
+        if(b.length < 3) {
             RpwsLog.Log("pbl-protocol-fail-length", "Failed to read Pebble protocol packet because it was too short.");
             return null;
         }
@@ -71,7 +71,7 @@ public abstract class PebblePacket {
 
         //Produce the final area
         EncoderStream es = new EncoderStream(packetPayload.length + 5);
-        es.WriteInt16((short)packetPayload.length);
+        es.WriteInt16((short)(packetPayload.length+1));
         es.WriteInt16((short)endpoint);
         es.WriteByte((byte)endpointCode);
         es.WriteBytes(packetPayload);
