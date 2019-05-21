@@ -36,8 +36,24 @@ public class DecoderStream {
         return ByteDecoder.DecodeUShort(buf);
     }
 
-    public int ReadShort() {
+    public short ReadShort() {
         byte[] buf = ReadBytes(2);
         return ByteDecoder.DecodeShort(buf);
+    }
+
+    public int ReadInt() {
+        byte[] buf = ReadBytes(4);
+        return ByteDecoder.DecodeInteger(buf);
+    }
+
+    public long ReadLong() {
+        byte[] buf = ReadBytes(8);
+        return ByteDecoder.DecodeLong(buf);
+    }
+
+    public String ReadLengthedString() {
+        int length = (int)ReadByte();
+        byte[] buf = ReadBytes(length);
+        return new String(buf);
     }
 }

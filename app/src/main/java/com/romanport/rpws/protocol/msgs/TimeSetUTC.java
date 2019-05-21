@@ -17,26 +17,9 @@ public class TimeSetUTC extends PebblePacket {
     public short utcOffset;
     public String timezoneName;
 
-    public TimeSetUTC() {
-        this.UpdateInfoFromType(PebblePacketType.TIME_SET_UTC);
-
-        unixTime = 1558244769;
-        utcOffset = 0;
-        timezoneName = "America/Chicago";
-    }
-
     @Override
-    public void DecodePayload(PebblePacketType type, DecoderStream ds) {
-        //Will never be used.
-    }
-
-    @Override
-    public byte[] EncodePayload() {
-        EncoderStream es = new EncoderStream(256);
-        es.WriteInt32(unixTime);
-        es.WriteInt16(utcOffset);
-        es.WriteLengthedString(timezoneName);
-        return es.ToBytes(  );
+    public PebblePacketType GetPacketType() {
+        return PebblePacketType.TIME_SET_UTC;
     }
 
 }

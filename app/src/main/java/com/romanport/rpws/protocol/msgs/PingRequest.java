@@ -7,21 +7,9 @@ import com.romanport.rpws.util.EncoderStream;
 
 public class PingRequest extends PebblePacket {
 
-    public PingRequest() {
-        this.UpdateInfoFromType(PebblePacketType.PING_REQUEST);
-    }
-
     @Override
-    public void DecodePayload(PebblePacketType type, DecoderStream ds) {
-
-    }
-
-    @Override
-    public byte[] EncodePayload() {
-        EncoderStream es = new EncoderStream(5);
-        es.WriteInt32(0);
-        es.WriteBool(true); //is idle?
-        return es.ToBytes(  );
+    public PebblePacketType GetPacketType() {
+        return PebblePacketType.PING_REQUEST;
     }
 
 }

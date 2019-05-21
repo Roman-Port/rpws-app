@@ -2,6 +2,7 @@ package com.romanport.rpws.protocol.msgs;
 
 import com.romanport.rpws.protocol.PebblePacket;
 import com.romanport.rpws.protocol.PebblePacketType;
+import com.romanport.rpws.protocol.PebbleProtocolSerialized;
 import com.romanport.rpws.util.DecoderStream;
 import com.romanport.rpws.util.EncoderStream;
 
@@ -18,30 +19,44 @@ public class PhoneVersionResponse extends PebblePacket {
     protocol_caps = Uint64()
      */
 
+    @PebbleProtocolSerialized(index = 0)
+    public Integer protocol_version;
+
+    @PebbleProtocolSerialized(index = 1)
+    public Integer session_caps;
+
+    @PebbleProtocolSerialized(index = 2)
+    public Integer platform_flags;
+
+    @PebbleProtocolSerialized(index = 3)
+    public Byte response_version;
+
+    @PebbleProtocolSerialized(index = 4)
+    public Byte major_version;
+
+    @PebbleProtocolSerialized(index = 5)
+    public Byte minor_version;
+
+    @PebbleProtocolSerialized(index = 6)
+    public Byte bugfix_version;
+
+    @PebbleProtocolSerialized(index = 7)
+    public Long protocol_caps;
+
     public PhoneVersionResponse() {
-        UpdateInfoFromType(PebblePacketType.PHONE_APP_VERSION_REPLY);
-    }
-
-    @Override
-    public void DecodePayload(PebblePacketType type, DecoderStream ds) {
-        //Must be overwritten in a subclass
-    }
-
-    @Override
-    public byte[] EncodePayload() {
-        EncoderStream es = new EncoderStream(24);
-
         //Write some fake values that are used by libpebble2.
-        es.WriteInt32(Integer.MAX_VALUE); //protocol_version
-        es.WriteInt32(0); //session_caps
-        es.WriteInt32(50); //platform_flags;
-        es.WriteByte((byte)0x02); //response_version
-        es.WriteByte((byte)3); //response_version
-        es.WriteByte((byte)0); //minor_version
-        es.WriteByte((byte)0); //bugfix_version
-        es.WriteInt64(Long.MAX_VALUE); //protocol_caps
+        protocol_version = Integer.MAX_VALUE;
+        session_caps = 0;
+        platform_flags = 50;
+        response_version = 0x02;
+        major_version = 3;
+        minor_version = 0;
+        bugfix_version = 0;
+        protocol_caps = Long.MAX_VALUE;
+    }
 
-        //Write
-        return es.ToBytes();
+    @Override
+    public PebblePacketType GetPacketType() {
+        return PebblePacketType.PHONE_APP_VERSION_REPLY;
     }
 }

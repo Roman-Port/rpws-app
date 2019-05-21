@@ -16,4 +16,14 @@ public class ByteDecoder {
         ByteBuffer wrapped = ByteBuffer.wrap(b); // big-endian by default
         return wrapped.getShort();
     }
+
+    public static int DecodeInteger(byte[] b) {
+        ByteBuffer wrapped = ByteBuffer.wrap(b); // big-endian by default
+        return wrapped.getInt();
+    }
+
+    public static long DecodeLong(byte[] b) {
+        ByteBuffer wrapped = ByteBuffer.wrap(b); // big-endian by default
+        return wrapped.getLong();
+    }
 }
