@@ -12,6 +12,7 @@ import com.romanport.rpws.util.ByteDecoder;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.UUID;
 
 public class BluetoothTransport extends PebbleTransport {
@@ -54,7 +55,7 @@ public class BluetoothTransport extends PebbleTransport {
                         int bytesRead = btInStream.read(buffer, 0, 2);
 
                         //Now, read full packet
-                        int len = ByteDecoder.DecodeShort(buffer) + 2;
+                        int len = ByteDecoder.DecodeShort(buffer, ByteOrder.BIG_ENDIAN) + 2;
                         buffer = new byte[len];
                         bytesRead = btInStream.read(buffer, 0, len);
 

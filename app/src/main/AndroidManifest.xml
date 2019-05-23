@@ -16,6 +16,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".ui.main.PrimaryActivity"
+            android:label="@string/title_activity_primary"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,8 +31,8 @@
         <service
             android:name=".device.PebbleBackgroundService"
             android:enabled="true"
-            android:process=":RpwsPblBtProcess"
-            android:exported="true"/>
+            android:exported="true"
+            android:process=":RpwsPblBtProcess" />
     </application>
 
 </manifest>

@@ -116,7 +116,7 @@ public class PebbleBackgroundService extends Service {
             BluetoothDevice btDevice = bluetoothAdapter.getRemoteDevice("B0:B4:48:9E:5B:4A"); //TODO: Have a custom address
 
             //Create Pebble device
-            PebbleDevice pbl = new PebbleDevice();
+            PebbleWatchDevice pbl = new PebbleWatchDevice();
 
             //Create transport
             BluetoothTransport transport = new BluetoothTransport(btDevice, pbl);

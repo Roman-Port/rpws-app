@@ -40,8 +40,6 @@ public class EncoderStream {
         WriteBytes(new byte[]{b});
     }
 
-    public static ByteOrder order = ByteOrder.BIG_ENDIAN; //wtf? why are messages to me little endian
-
     public void WriteBool(boolean b) {
         if(b)
             WriteByte((byte)1);
@@ -49,15 +47,15 @@ public class EncoderStream {
             WriteByte((byte)0);
     }
 
-    public void WriteInt32(int v) {
+    public void WriteInt32(int v, ByteOrder order) {
         WriteBytes(ByteBuffer.allocate(4).order(order).putInt(v).array());
     }
 
-    public void WriteInt16(short v) {
+    public void WriteInt16(short v, ByteOrder order) {
         WriteBytes(ByteBuffer.allocate(2).order(order).putShort(v).array());
     }
 
-    public void WriteInt64(long v) {
+    public void WriteInt64(long v, ByteOrder order) {
         WriteBytes(ByteBuffer.allocate(8).order(order).putLong(v).array());
     }
 

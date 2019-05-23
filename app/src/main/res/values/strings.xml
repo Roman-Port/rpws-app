@@ -7,4 +7,8 @@
     <string name="persist_notification_title_off">Bluetooth is Off</string>
     <string name="persist_notification_body_off">Cannot connect to your Pebble because Bluetooth is turned off on this device.</string>
     <string name="persist_notification_body">RPWS for Pebble is working in the background.</string>
+
+    <string name="title_activity_primary">PrimaryActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
 </resources>

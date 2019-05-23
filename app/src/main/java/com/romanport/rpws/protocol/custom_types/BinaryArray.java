@@ -11,6 +11,10 @@ public class BinaryArray {
     public BinaryArray(int fixedLen) {
         length = fixedLen;
     }
+    public BinaryArray(byte[] b) {
+        length = b.length;
+        data = b;
+    }
 
     public static BinaryArray Read(DecoderStream es, int length) {
         BinaryArray ba = new BinaryArray(length);

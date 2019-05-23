@@ -1,6 +1,8 @@
 package com.romanport.rpws.util;
 
 import java.lang.reflect.Array;
+import java.nio.ByteOrder;
+import java.nio.charset.Charset;
 
 public class DecoderStream {
 
@@ -31,24 +33,24 @@ public class DecoderStream {
         return b;
     }
 
-    public int ReadUShort() {
+    public int ReadUShort(ByteOrder order) {
         byte[] buf = ReadBytes(2);
-        return ByteDecoder.DecodeUShort(buf);
+        return ByteDecoder.DecodeUShort(buf, order);
     }
 
-    public short ReadShort() {
+    public short ReadShort(ByteOrder order) {
         byte[] buf = ReadBytes(2);
-        return ByteDecoder.DecodeShort(buf);
+        return ByteDecoder.DecodeShort(buf, order);
     }
 
-    public int ReadInt() {
+    public int ReadInt(ByteOrder order) {
         byte[] buf = ReadBytes(4);
-        return ByteDecoder.DecodeInteger(buf);
+        return ByteDecoder.DecodeInteger(buf, order);
     }
 
-    public long ReadLong() {
+    public long ReadLong(ByteOrder order) {
         byte[] buf = ReadBytes(8);
-        return ByteDecoder.DecodeLong(buf);
+        return ByteDecoder.DecodeLong(buf, order);
     }
 
     public String ReadLengthedString() {
@@ -59,6 +61,8 @@ public class DecoderStream {
 
     public String ReadConstString(int length) {
         byte[] buf = ReadBytes(length);
-        return new String(buf);
+        int i = 0;
+        for (i = 0; i < buf.length && buf[i] != 0; i++) { } //Find null terminiator
+        return new String(buf, 0, i, Charset.defaultCharset());
     }
 }
