@@ -9,6 +9,6 @@
     <string name="persist_notification_body">RPWS for Pebble is working in the background.</string>
 
     <string name="title_activity_primary">PrimaryActivity</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_1">Debug</string>
+    <string name="tab_text_2">Watchfaces</string>
 </resources>

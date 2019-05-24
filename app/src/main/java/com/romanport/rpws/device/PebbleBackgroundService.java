@@ -6,8 +6,10 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -16,11 +18,18 @@ import android.support.v4.app.NotificationManagerCompat;
 import com.romanport.rpws.R;
 import com.romanport.rpws.RpwsLog;
 import com.romanport.rpws.bluetooth.BluetoothTransport;
+import com.romanport.rpws.device.helpers.NotificationsHelper;
+import com.romanport.rpws.device.services.BgNotificationService2;
+import com.romanport.rpws.entities.NotificationSource;
+import com.romanport.rpws.protocol.timeline.TimelineAction;
+
+import java.util.LinkedList;
 
 public class PebbleBackgroundService extends Service {
 
     public PebbleDevice pblDevice;
     public Notification bgNotif;
+    public PebbleNotificationChange serviceNotifications;
 
     public PebbleBackgroundService() {
 
@@ -76,6 +85,32 @@ public class PebbleBackgroundService extends Service {
         bgNotif = n;
         notificationManager.notify(1, n);
         startForeground(1, n);
+
+        //Start some other services, such as the notification service
+        serviceNotifications = new PebbleNotificationChange();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.romanport.rpws.PEBBLE_NOTIFICATION_ACTION");
+        registerReceiver(serviceNotifications,intentFilter);
+        startService(new Intent(this, BgNotificationService2.class));
+    }
+
+    public class PebbleNotificationChange extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //Get the type
+            int actionType = intent.getIntExtra("type", -1);
+            try {
+                if(actionType == 1) {
+                    //Notification was sent.
+                    String title = intent.getStringExtra("notif_title");
+                    String content = intent.getStringExtra("notif_content");
+                    String sender = intent.getStringExtra("notif_sender");
+                    NotificationsHelper.SendModernNotif(pblDevice, title, content, sender, NotificationSource.SMS, 1, new LinkedList<TimelineAction>());
+                }
+            } catch (Exception ex) {
+                RpwsLog.LogException("bg-notification-rx-err", "Got error: ", ex);
+            }
+        }
     }
 
     @Override
@@ -116,7 +151,7 @@ public class PebbleBackgroundService extends Service {
             BluetoothDevice btDevice = bluetoothAdapter.getRemoteDevice("B0:B4:48:9E:5B:4A"); //TODO: Have a custom address
 
             //Create Pebble device
-            PebbleWatchDevice pbl = new PebbleWatchDevice();
+            PebbleWatchDevice pbl = new PebbleWatchDevice(this);
 
             //Create transport
             BluetoothTransport transport = new BluetoothTransport(btDevice, pbl);

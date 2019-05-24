@@ -17,10 +17,12 @@ public class PebbleWatchDevice extends PebbleDevice {
     public WatchVersionReply deviceinfo;
     public String versionTag;
     public Boolean isReady;
+    public PebbleBackgroundService backgroundService;
 
-    public PebbleWatchDevice() throws Exception {
+    public PebbleWatchDevice(PebbleBackgroundService bs) throws Exception {
         super();
         isReady = false;
+        backgroundService = bs;
     }
 
     @Override
@@ -56,8 +58,9 @@ public class PebbleWatchDevice extends PebbleDevice {
         //Fetch some less important data in the background. Also update time and do other housekeeping like that.
         UpdateTimeNow();
 
+
         //debug
-        NotificationsHelper.SendModernNotif(this, "Test", "Test", "Test", NotificationSource.SMS, 45, new LinkedList<TimelineAction>());
+        NotificationsHelper.SendModernNotif(this, "I can't wait to get this ready.", "", "Hi Reddit!", NotificationSource.SMS, 45, new LinkedList<TimelineAction>());
     }
 
     public void UpdateTimeNow() throws Exception {
